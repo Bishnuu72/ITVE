@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Logo from "../../assets/images/Logo.jpg";
+// import Logo from "../../assets/images/Logo.jpg";
 import { getAllSettings } from "../../services/settingService";
 
 export default function Footer() {

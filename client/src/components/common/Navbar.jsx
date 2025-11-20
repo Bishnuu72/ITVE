@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Logo from "../../assets/images/Logo.JPG";
+// import logo from "../../assets/images/Logo.JPG";
 import { AuthContext } from "../../context/AuthContext";
 import { getAllSettings } from "../../services/settingService";
 export default function Header() {
@@ -141,14 +141,14 @@ export default function Header() {
               to="/student-dashboard"
               className="hover:underline hover:text-yellow-300 transition"
             >
-              Student DASHBOARD
+              STUDENT DASHBOARD
             </Link>
           ) : (
             <Link
               to="/login"
               className="hover:underline hover:text-yellow-300 transition"
             >
-              Student LOGIN
+              STUDENT LOGIN
             </Link>
           )}
           {isCenter ? (
@@ -156,14 +156,14 @@ export default function Header() {
               to="/center-dashboard"
               className="hover:underline hover:text-yellow-300 transition"
             >
-              Center DASHBOARD
+              CENTER DASHBOARD
             </Link>
           ) : (
             <Link
               to="/login"
               className="hover:underline hover:text-yellow-300 transition"
             >
-              Center LOGIN
+              CENTER LOGIN
             </Link>
           )}
           <Link
