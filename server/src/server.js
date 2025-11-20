@@ -44,7 +44,7 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
+const app = express();
 
 // Middleware
 // app.use(express.json());
@@ -60,7 +60,6 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-const app = express();
 
 
 // ✅ NEW: Create uploads directory if it doesn't exist (fixes Multer 500 errors)
