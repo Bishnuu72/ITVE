@@ -49,7 +49,7 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: `${process.env.FRONTEND_URL}`, // frontend URL
+  origin: `https://itveindia.vercel.app/`, // frontend URL
   credentials: true,
 }));
 
