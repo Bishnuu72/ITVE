@@ -44,14 +44,24 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express();
+
 
 // Middleware
-app.use(express.json());
+// app.use(express.json());
+// app.use(cors({
+//   origin: `https://itveindia.vercel.app`, // frontend URL
+//   credentials: true,
+// }));
+
 app.use(cors({
-  origin: `https://itveindia.vercel.app`, // frontend URL
+  origin: ["https://itveindia.vercel.app", "http://localhost:5173"],
+  methods: ["GET","POST","PUT","DELETE"],
   credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+const app = express();
+
 
 // ✅ NEW: Create uploads directory if it doesn't exist (fixes Multer 500 errors)
 const uploadsDir = path.join(__dirname, "uploads"); // Full path to uploads/ in project root
