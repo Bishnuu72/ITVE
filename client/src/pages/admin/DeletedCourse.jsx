@@ -1,0 +1,181 @@
+import React, { useState, useEffect } from "react";
+import Sidebar from "../../components/admin/Sidebar";
+import Topbar from "../../components/admin/Topbar";
+import { useNavigate } from "react-router-dom"; // ✅ NEW: Import for navigation if needed
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = `${API_BASE_URL}/api`;
+
+export default function DeletedCourses() {
+  const [search, setSearch] = useState("");
+  const [deletedCourses, setDeletedCourses] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate(); // ✅ NEW: If needed for actions
+
+  // Fetch deleted courses only
+  const fetchDeletedCourses = async (searchQuery = "") => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const url = `${API_BASE}/courses/deleted${searchQuery ? `?search=${encodeURIComponent(searchQuery)}` : ""}`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch deleted courses");
+      const { data } = await response.json();
+      setDeletedCourses(data || []);
+    } catch (err) {
+      setError(err.message);
+      alert(`❌ Error: ${err.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDeletedCourses();
+  }, []);
+
+  // Debounced search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchDeletedCourses(search);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  // Handle search button click
+  const handleSearch = () => {
+    fetchDeletedCourses(search);
+  };
+
+  // Restore action (unmarks deleted, refreshes list)
+  const handleRestore = async (id) => {
+    if (window.confirm("Are you sure you want to restore this course?")) {
+      try {
+        const response = await fetch(`${API_BASE}/courses/${id}/restore`, { method: "PUT" });
+        if (!response.ok) throw new Error("Failed to restore");
+        alert("✅ Course restored to Courses list!");
+        fetchDeletedCourses(search); // Refresh (course disappears from deleted list)
+      } catch (err) {
+        alert(`❌ Error: ${err.message}`);
+      }
+    }
+  };
+
+  // Photo Error Handler
+  const handlePhotoError = (e, fullPath) => {
+    const filename = fullPath.replace(/^\/uploads\//, '');
+    console.error(`❌ Photo load failed for ${fullPath}: 404 - File not found at /uploads/${filename}`);
+    if (e?.target) {
+      e.target.style.display = "none";
+      const parent = e.target.parentElement;
+      if (parent) {
+        parent.innerHTML = '<div class="w-12 h-12 bg-gray-300 rounded-md flex items-center justify-center text-xs text-gray-500 mx-auto">No Photo</div>';
+      }
+    }
+  };
+
+  if (isLoading) return <div className="flex justify-center items-center h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>;
+
+  return (
+    <div className="flex h-screen bg-gray-100 overflow-hidden">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Section */}
+      <div className="flex flex-col flex-1 overflow-hidden">
+        <Topbar />
+
+        {/* Content - Scrollable only if needed */}
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 border-b-4 border-red-600 inline-block pb-1">
+                All Deleted Courses
+              </h2>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="border rounded-md p-2 text-sm focus:ring-2 focus:ring-blue-500"
+                />
+                <button 
+                  onClick={handleSearch} // ✅ FIXED: Wired up
+                  className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700"
+                >
+                  GO
+                </button>
+              </div>
+            </div>
+
+            {error && <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">Error: {error}</div>}
+
+            {/* Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full border text-sm">
+                <thead className="bg-gray-800 text-white">
+                  <tr>
+                    <th className="border p-2 text-center w-12">Sl No</th>
+                    <th className="border p-2 text-center w-16">Photo</th>
+                    <th className="border p-2 text-center">Course Code</th>
+                    <th className="border p-2 text-left">Course Name</th>
+                    <th className="border p-2 text-left">Short Name</th>
+                    <th className="border p-2 text-center">Duration</th>
+                    <th className="border p-2 text-center">Type</th>
+                    <th className="border p-2 text-center">Exam Q. Papers</th>
+                    <th className="border p-2 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {deletedCourses.map((c, index) => (
+                    <tr key={c._id} className="hover:bg-gray-50">
+                      <td className="border p-2 text-center">{index + 1}</td>
+                      <td className="border p-2 text-center">
+                        {c.photo ? (
+                          <img
+                            src={`${API_BASE_URL}${c.photo}`}
+                            alt="Course"
+                            className="w-12 h-12 object-cover rounded-md mx-auto"
+                            onError={(e) => handlePhotoError(e, c.photo)}
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-300 rounded-md flex items-center justify-center text-xs text-gray-500 mx-auto">
+                            No Photo
+                          </div>
+                        )}
+                      </td>
+                      <td className="border p-2 text-center">{c.code}</td>
+                      <td className="border p-2">{c.name}</td>
+                      <td className="border p-2 text-center">{c.shortName}</td>
+                      <td className="border p-2 text-center">{c.duration}</td>
+                      <td className="border p-2 text-center">{c.type}</td>
+                      <td className="border p-2 text-center">{c.examQuestionPapers}</td>
+                      <td className="border p-2 text-center">
+                        <button
+                          onClick={() => handleRestore(c._id)}
+                          className="bg-green-600 text-white px-3 py-1 rounded-md text-sm font-semibold hover:bg-green-700 transition"
+                        >
+                          ♻️ Restore
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+
+                  {deletedCourses.length === 0 && !isLoading && (
+                    <tr>
+                      <td colSpan="9" className="text-center text-gray-500 py-4 italic">No deleted courses found.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
