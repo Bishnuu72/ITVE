@@ -121,7 +121,7 @@ export default function AdminDashboard() {
     { title: "Offline Registered",   value: loading ? "..." : stats.offlineStudents,   icon: <FaBuilding className="text-5xl" />,     bgColor: "bg-gradient-to-br from-purple-500 to-purple-700", link: "/all-students" },
     { title: "Total Courses",        value: loading ? "..." : stats.totalCourses,      icon: <FaBookOpen className="text-5xl" />,     bgColor: "bg-gradient-to-br from-yellow-500 to-orange-600", link: "/course-lists" },
     { title: "Total Categories",     value: loading ? "..." : stats.totalCategories,   icon: <FaLayerGroup className="text-5xl" />,   bgColor: "bg-gradient-to-br from-pink-500 to-red-600",      link: "/category-lists" },
-    { title: "Total Centers",        value: loading ? "..." : stats.totalCenters,      icon: <FaHome className="text-5xl" />,         bgColor: "bg-gradient-to-br from-indigo-500 to-indigo-700", link: "/centre-list" },
+    { title: "Total Centers",        value: loading ? "..." : stats.totalCenters,      icon: <FaHome className="text-5xl" />,         bgColor: "bg-gradient-to-br from-indigo-500 to-indigo-700", link: "/center-lists" },
 
     // NEW CARDS - BEFORE FEE CARDS
     { title: "Total Downloads",      value: loading ? "..." : stats.totalDownloads,    icon: <FaDownload className="text-5xl" />,     bgColor: "bg-gradient-to-br from-orange-500 to-red-600",    link: "/download-list" },

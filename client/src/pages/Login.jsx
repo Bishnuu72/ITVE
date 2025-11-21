@@ -141,7 +141,7 @@ function Login() {
               {loading ? "Logging in..." : "Login"}
             </button>
 
-            <p className="text-sm text-gray-600 text-center mt-4">
+            {/* <p className="text-sm text-gray-600 text-center mt-4">
               Don’t have an account?{" "}
               <a
                 href="/register"
@@ -149,7 +149,7 @@ function Login() {
               >
                 Register
               </a>
-            </p>
+            </p> */}
           </form>
         </div>
       </div>
